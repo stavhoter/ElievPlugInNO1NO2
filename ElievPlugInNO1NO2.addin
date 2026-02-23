@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+
+	<!-- 1) Application: creates the Ribbon button on Revit startup -->
+	<AddIn Type="Application">
+		<Name>LinearSchemeApp</Name>
+		<Assembly>C:\Users\PC\source\repos\ElievPlugInNO1NO2\bin\x64\Debug\ElievPlugInNO1NO2.dll</Assembly>
+		<AddInId>9B0F2F2D-5A4A-4B0B-9D4E-4B1B3E9A2F11</AddInId>
+		<FullClassName>ElievPlugInNO1NO2.App</FullClassName>
+		<VendorId>Stav</VendorId>
+		<VendorDescription>@stav</VendorDescription>
+	</AddIn>
+
+	<!-- 2) Existing command (your original one) -->
+	<AddIn Type="Command">
+		<Name>Hello</Name>
+		<Assembly>C:\Users\PC\source\repos\ElievPlugInNO1NO2\bin\x64\Debug\ElievPlugInNO1NO2.dll</Assembly>
+		<AddInId>3766003D-E04B-40D8-818B-6DB1C9C280E4</AddInId>
+		<FullClassName>ElievPlugInNO1NO2.Main</FullClassName>
+		<Text>ElievPlugInNO1NO2</Text>
+		<Description>ChangeViewsProperty</Description>
+		<VendorId>Stav</VendorId>
+		<VendorDescription>@stav</VendorDescription>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+	</AddIn>
+
+	<!-- 3) New command: Create Linear Scheme -->
+	<AddIn Type="Command">
+		<Name>CreateLinearScheme</Name>
+		<Assembly>C:\Users\PC\source\repos\ElievPlugInNO1NO2\bin\x64\Debug\ElievPlugInNO1NO2.dll</Assembly>
+		<AddInId>5A1A3C8B-0D7C-4F2C-9F6D-2BCE1A0D9C44</AddInId>
+		<FullClassName>ElievPlugInNO1NO2.CreateLinearSchemeCommand</FullClassName>
+		<Text>צור סכמה קווית</Text>
+		<Description>Creates a new Linear Scheme view.</Description>
+		<VendorId>Stav</VendorId>
+		<VendorDescription>@stav</VendorDescription>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+	</AddIn>
+
+</RevitAddIns>
