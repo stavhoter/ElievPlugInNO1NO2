@@ -38,9 +38,10 @@ namespace ElievPlugInNO1NO2
                 if (newView == null)
                     throw new Exception("Failed to duplicate the selected side view.");
 
-                // Name
+                // Name (unique)
                 string baseName = string.IsNullOrWhiteSpace(viewNameFromUser) ? "סכמה קווית" : viewNameFromUser.Trim();
-                newView.Name = MakeUniqueViewName(doc, baseName);
+                string uniqueName = MakeUniqueViewName(doc, baseName);
+                newView.Name = uniqueName;
 
                 // Step 2: Hide everything except Levels + Level Heads
                 HideAllCategoriesExcept(doc, newView, new[]
@@ -51,6 +52,10 @@ namespace ElievPlugInNO1NO2
 
                 // Optional: keep crop active but hide crop rectangle
                 TrySetCrop(newView, cropActive: true, cropVisible: false);
+
+                // ✅ IMPORTANT: Register the schema so "Add To Schema" can list it later
+                // systemKey = schema name (unique view name)
+                SchemaViewRegistry.SetSchemaViewId(doc, uniqueName, newView.Id);
 
                 t.Commit();
             }

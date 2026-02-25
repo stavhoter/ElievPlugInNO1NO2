@@ -24,7 +24,6 @@ namespace ElievPlugInNO1NO2
         private readonly Button _btnRemove;
         private readonly Button _btnAdd;
         private readonly Button _btnAddToSchema;
-        private readonly Button _btnAttachTwin;
         private readonly Button _btnExit;
 
         private readonly Document _doc;
@@ -87,19 +86,17 @@ namespace ElievPlugInNO1NO2
                 HeaderText = "ערך"
             });
 
-            // Buttons
+            // Buttons (הוסר כפתור 5 - הצמד תאום דיגיטלי)
             _btnUpdate = new Button { Text = "1) עדכן תכונה", Width = 140, Height = 34 };
             _btnRemove = new Button { Text = "2) הסר תכונה", Width = 140, Height = 34 };
             _btnAdd = new Button { Text = "3) הוסף תכונה", Width = 140, Height = 34 };
             _btnAddToSchema = new Button { Text = "4) הוסף רכיב לסכמה", Width = 170, Height = 34 };
-            _btnAttachTwin = new Button { Text = "5) הצמד תאום דיגיטלי", Width = 180, Height = 34 };
-            _btnExit = new Button { Text = "6) צא", Width = 120, Height = 34, DialogResult = DialogResult.Cancel };
+            _btnExit = new Button { Text = "5) צא", Width = 120, Height = 34, DialogResult = DialogResult.Cancel };
 
             _btnUpdate.Click += (s, e) => CloseWith(ComponentMetadataAction.UpdateProperty);
             _btnRemove.Click += (s, e) => CloseWith(ComponentMetadataAction.RemoveProperty);
             _btnAdd.Click += (s, e) => CloseWith(ComponentMetadataAction.AddProperty);
             _btnAddToSchema.Click += (s, e) => CloseWith(ComponentMetadataAction.AddToSchema);
-            _btnAttachTwin.Click += (s, e) => CloseWith(ComponentMetadataAction.AttachDigitalTwin);
             _btnExit.Click += (s, e) => CloseWith(ComponentMetadataAction.Exit);
 
             var buttonsPanel = new FlowLayoutPanel
@@ -113,7 +110,6 @@ namespace ElievPlugInNO1NO2
             };
 
             buttonsPanel.Controls.Add(_btnExit);
-            buttonsPanel.Controls.Add(_btnAttachTwin);
             buttonsPanel.Controls.Add(_btnAddToSchema);
             buttonsPanel.Controls.Add(_btnAdd);
             buttonsPanel.Controls.Add(_btnRemove);

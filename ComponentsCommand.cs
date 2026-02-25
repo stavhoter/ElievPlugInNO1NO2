@@ -20,12 +20,12 @@ namespace ElievPlugInNO1NO2
                 var uidoc = uiapp.ActiveUIDocument;
                 var doc = uidoc.Document;
 
-                // 1) Load components folder
-                string folderPath = PluginSettings.LoadComponentsFolder();
+                // 1) Load 3D model folder (changed from 2D components folder)
+                string folderPath = PluginSettings.LoadModel3DFolder();
                 if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
                 {
                     TaskDialog.Show("רכיבים",
-                        "לא הוגדרה תיקיית רכיבים או שהתיקייה לא קיימת.\n\nגש ל'תיקיית רכיבים' ובחר תיקייה תקינה.");
+                        "לא הוגדרה תיקיית מודל 3D או שהתיקייה לא קיימת.\n\nגש ל'תיקיית מודל (3D)' ובחר תיקייה תקינה.");
                     return Result.Cancelled;
                 }
 
