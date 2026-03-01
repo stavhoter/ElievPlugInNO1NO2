@@ -26,10 +26,16 @@ namespace ElievPlugInNO1NO2
 
             if (family == null)
             {
-                // Load the family into the project
-                bool loaded = doc.LoadFamily(rfaPath, out family);
-                if (!loaded || family == null)
-                    return null;
+                // Load the family into the project (requires Transaction)
+                using (Transaction t = new Transaction(doc, "Load Family"))
+                {
+                    t.Start();
+                    bool loaded = doc.LoadFamily(rfaPath, out family);
+                    t.Commit();
+
+                    if (!loaded || family == null)
+                        return null;
+                }
             }
 
             // Get first symbol (type)

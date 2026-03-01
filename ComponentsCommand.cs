@@ -29,9 +29,10 @@ namespace ElievPlugInNO1NO2
                     return Result.Cancelled;
                 }
 
-                // 2) Collect all .rfa files
+                // 2) Collect all .rfa files (but IGNORE the ones ending with "_2D.rfa")
                 List<string> familyFullPaths = Directory
                     .GetFiles(folderPath, "*.rfa", SearchOption.TopDirectoryOnly)
+                    .Where(p => !p.EndsWith("_2D.rfa", StringComparison.OrdinalIgnoreCase))
                     .OrderBy(p => p, StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
@@ -58,7 +59,51 @@ namespace ElievPlugInNO1NO2
                 string familyKey = selectedFamilyPath;
                 string componentName = Path.GetFileNameWithoutExtension(selectedFamilyPath);
 
-                // 4) Open the metadata management window (table + 5 buttons)
+                // 3.5) Auto-generate Detail Component (2D) from the 3D family
+                string generated2DPath = null;
+
+                // Build the expected 2D file path
+                string dir = Path.GetDirectoryName(selectedFamilyPath);
+                string name = Path.GetFileNameWithoutExtension(selectedFamilyPath);
+                string expected2DPath = Path.Combine(dir, name + "_2D.rfa");
+
+                // Check if the 2D file already exists
+                if (File.Exists(expected2DPath))
+                {
+                    // Use existing 2D file
+                    generated2DPath = expected2DPath;
+
+                    // Still save it to metadata
+                    using (Transaction t = new Transaction(doc, "STV - Link 2D Path"))
+                    {
+                        t.Start();
+                        StvDocumentMetadataStore.SetProperty(doc, familyKey, "STV.Detail2DPath", generated2DPath);
+                        t.Commit();
+                    }
+                }
+                else
+                {
+                    // Generate the 2D file
+                    try
+                    {
+                        generated2DPath = AutoGenerate2DHelper.GenerateDetailComponentFrom3D(uiapp, selectedFamilyPath);
+
+                        // Save the 2D path as metadata (link between 3D and 2D)
+                        using (Transaction t = new Transaction(doc, "STV - Link 2D Path"))
+                        {
+                            t.Start();
+                            StvDocumentMetadataStore.SetProperty(doc, familyKey, "STV.Detail2DPath", generated2DPath);
+                            t.Commit();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TaskDialog.Show("יצירת Detail Component",
+                            $"שגיאה ביצירת רכיב 2D:\n{ex.Message}\n\nניתן להמשיך בלי זה.");
+                    }
+                }
+
+                // 4) Open the metadata management window (table + 4 buttons)
                 return RunComponentMetadataUI(uiapp, doc, familyKey, componentName);
             }
             catch (Exception ex)
@@ -192,12 +237,20 @@ namespace ElievPlugInNO1NO2
                                     if (schemaViewId == ElementId.InvalidElementId)
                                         break;
 
+                                    // ✅ Fetch the auto-generated 2D path from metadata
+                                    var props = StvDocumentMetadataStore.ReadProperties(doc, familyKey);
+                                    if (!props.TryGetValue("STV.Detail2DPath", out string detail2DPath) || string.IsNullOrWhiteSpace(detail2DPath))
+                                    {
+                                        TaskDialog.Show("שגיאה", "לא נמצא נתיב לקובץ ה-2D של רכיב זה.\nנסה לבחור את הרכיב מחדש מהרשימה כדי שייווצר קובץ ה-2D.");
+                                        break;
+                                    }
+
                                     // ✅ Real placement (PickPoint + Snap + Place)
-                                    // Use uiapp variable, not commandData inside the case
+                                    // Use the 2D path instead of the 3D familyKey!
                                     SchemaPlacer.Place2DInSchemaView(
                                         uiapp,
                                         schemaViewId,
-                                        familyKey,
+                                        detail2DPath,
                                         schemaName
                                     );
                                 }

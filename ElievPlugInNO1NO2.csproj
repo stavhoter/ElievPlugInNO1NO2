@@ -80,7 +80,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="App.cs" />
-    <Compile Include="AutoGenerate2DComponentCommand.cs" />
+    <Compile Include="AutoGenerate2DHelper.cs.cs" />
     <Compile Include="ComponentActionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,9 +125,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetPath)" "%25AppData%25\Autodesk\Revit\Addins\2024\"
-if exist "$(TargetDir)$(TargetName).pdb" copy /Y "$(TargetDir)$(TargetName).pdb" "%25AppData%25\Autodesk\Revit\Addins\2024\"
-if exist "$(ProjectDir)$(TargetName).addin" copy /Y "$(ProjectDir)$(TargetName).addin" "%25AppData%25\Autodesk\Revit\Addins\2024\"
+    <PostBuildEvent>copy /Y "$(TargetPath)" "%25AppData%25\Autodesk\Revit\Addins\2024\UnderProgres\"
+if exist "$(TargetDir)$(TargetName).pdb" copy /Y "$(TargetDir)$(TargetName).pdb" "%25AppData%25\Autodesk\Revit\Addins\2024\UnderProgres\"
+if exist "$(ProjectDir)$(TargetName).addin" copy /Y "$(ProjectDir)$(TargetName).addin" "%25AppData%25\Autodesk\Revit\Addins\2024\UnderProgres\"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

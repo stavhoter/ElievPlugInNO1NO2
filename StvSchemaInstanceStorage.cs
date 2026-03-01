@@ -6,8 +6,8 @@ namespace ElievPlugInNO1NO2
 {
     public static class StvSchemaInstanceStorage
     {
-        // Do not change once used in real projects
-        private static readonly Guid SchemaGuid = new Guid("C2D8C3B2-5E6A-4A12-9F8B-5B9B5A2C4F10");
+        // Changed GUID to recreate schema with correct field definitions
+        private static readonly Guid SchemaGuid = new Guid("D3E9D4C3-6F7B-5B23-AF9C-6C0C6B3D5F21");
         private const string SchemaName = "STV_SchemaInstance";
 
         private const string F_InstanceGuid = "InstanceGuid";
@@ -31,6 +31,8 @@ namespace ElievPlugInNO1NO2
             b.AddSimpleField(F_SchemaName, typeof(string));
             b.AddSimpleField(F_Family2DPath, typeof(string));
             b.AddSimpleField(F_LevelIdInt, typeof(int));
+
+            // GridU and GridV as simple doubles (unitless - internal coordinates)
             b.AddSimpleField(F_GridU, typeof(double));
             b.AddSimpleField(F_GridV, typeof(double));
 

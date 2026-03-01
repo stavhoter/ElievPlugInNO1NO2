@@ -6,7 +6,7 @@ namespace ElievPlugInNO1NO2
 {
     public static class SchemaPlacer
     {
-        private const double GridSizeMeters = 0.10; // ✅ 10 cm snap
+        private const double GridSizeMeters = 0.10; // 10 cm snap
 
         public static ElementId Place2DInSchemaView(
             UIApplication uiapp,
@@ -27,8 +27,16 @@ namespace ElievPlugInNO1NO2
             if (schemaView == null)
                 throw new InvalidOperationException("Schema view not found.");
 
-            // 1) Switch to schema view (as requested)
+            // 1) Switch to schema view
             uidoc.ActiveView = schemaView;
+
+            // 1.5) Ensure the view has a Work Plane before picking a point
+            using (Transaction tWP = new Transaction(doc, "Set Work Plane"))
+            {
+                tWP.Start();
+                EnsureWorkPlaneInView(doc, schemaView);
+                tWP.Commit();
+            }
 
             // 2) Load family symbol (must be Detail Component)
             FamilySymbol symbol = FamilyLoader.EnsureFirstSymbolLoaded(doc, schema2DRfaPath);
@@ -38,7 +46,7 @@ namespace ElievPlugInNO1NO2
             if (symbol.Category == null || symbol.Category.Id.IntegerValue != (int)BuiltInCategory.OST_DetailComponents)
                 throw new InvalidOperationException("Selected 2D family must be a Detail Component (OST_DetailComponents).");
 
-            // 3) Pick point
+            // 3) Pick point (Now it won't crash because we have a Work Plane)
             XYZ picked = uidoc.Selection.PickPoint("בחר נקודה להנחת רכיב בסכמה.");
 
             // 4) Snap point in view plane (Right/Up)
@@ -55,7 +63,7 @@ namespace ElievPlugInNO1NO2
                 // Place as detail component in this view
                 FamilyInstance inst = doc.Create.NewFamilyInstance(snapped, symbol, schemaView);
 
-                // Store instance metadata (for twins / delete sync later)
+                // Store instance metadata
                 ElementId levelId = GetViewLevelId(schemaView);
                 Guid instanceGuid = Guid.NewGuid();
 
@@ -71,6 +79,17 @@ namespace ElievPlugInNO1NO2
 
                 t.Commit();
                 return inst.Id;
+            }
+        }
+
+        // --- Helper: Ensures the view has a valid SketchPlane ---
+        private static void EnsureWorkPlaneInView(Document doc, View view)
+        {
+            if (view.SketchPlane == null)
+            {
+                Plane plane = Plane.CreateByNormalAndOrigin(view.ViewDirection, view.Origin);
+                SketchPlane sp = SketchPlane.Create(doc, plane);
+                view.SketchPlane = sp;
             }
         }
 
